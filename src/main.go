@@ -18,7 +18,7 @@ func main() {
 
 	configProxy(conf)
 
-	login.HttpLogin()
+	login.HttpLogin(conf)
 
 	log.Println("listen : " + strconv.Itoa(conf.Base.Port))
 	log.Fatal(http.ListenAndServe(":"+strconv.Itoa(conf.Base.Port), nil))

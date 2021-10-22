@@ -3,10 +3,12 @@ package proxy
 import (
 	"GatewayAuth/src/config"
 	"GatewayAuth/src/login"
+	"GatewayAuth/src/util"
 	"log"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+	"time"
 )
 
 // NewProxy takes target host and creates a reverse proxy
@@ -29,7 +31,13 @@ func ProxyRequestHandler(proxyAuth config.ProxyAuth, proxy *httputil.ReverseProx
 			log.Println(err)
 		}
 		if needLogin {
-			w.Header().Set("Location", "/login")
+			u := util.GetURL(r)
+			var param = url.Values{}
+			param.Add("url", u)
+
+			expiration := time.Now().Add(1 * time.Second)
+			http.SetCookie(w, &http.Cookie{Name: login.CookieKey, Path: "/", Value: "", Expires: expiration})
+			w.Header().Set("Location", "/login?"+param.Encode())
 			w.WriteHeader(302)
 		} else {
 			proxy.ServeHTTP(w, r)

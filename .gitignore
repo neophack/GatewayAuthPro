@@ -40,3 +40,4 @@ package-lock.json
 
 config
 frontend/build/**
+**/yarn.lock
