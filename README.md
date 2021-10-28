@@ -6,10 +6,7 @@
 
 <h1 align="center">Gateway Auth</h1>
 
-<div align="center">
-
-Go/React/Material-ui 网关登录工具
-
+<div align="center">Go/React/Material-ui 网关登录工具</div>
 
 <p align="center">
 <div width="49%" height="250px">
