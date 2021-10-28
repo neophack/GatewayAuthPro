@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://github.com/LambdaExpression/GatewayAuth">
-    <img width="150" src="/LambdaExpression/GatewayAuth/raw/branch/master/public/logo512.png">
+    <img width="150" src="/LambdaExpression/GatewayAuth/raw/branch/master/public/logo.png">
   </a>
 </p>
 
@@ -9,12 +9,8 @@
 <div align="center">Go/React/Material-ui 网关登录工具</div>
 
 <p align="center">
-<div width="49%" height="250px">
-  <img max-width="100%" max-height="100%"  src="/LambdaExpression/GatewayAuth/raw/branch/master/public/image1.jpg">
-</div>
-<div width="49%" height="250px">
-  <img max-width="100%"  max-height="100%" src="/LambdaExpression/GatewayAuth/raw/branch/master/public/image2.jpg">
-</div>
+  <img width="49%" src="/LambdaExpression/GatewayAuth/raw/branch/master/public/image1.png">
+  <img width="49%" src="/LambdaExpression/GatewayAuth/raw/branch/master/public/image2.png">
 </p>
 
 
