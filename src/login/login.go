@@ -2,6 +2,7 @@ package login
 
 import (
 	"GatewayAuth/src/bindata"
+	"GatewayAuth/src/cache"
 	"GatewayAuth/src/config"
 	"GatewayAuth/src/util"
 	"crypto/md5"
@@ -17,10 +18,14 @@ import (
 	"time"
 )
 
-var LoginSession = make(map[string]string)
 var CookieKey = "gateway.auto.cookie"
 
-func Login(proxyAuth config.ProxyAuth, r *http.Request) (needLogin bool, err error) {
+var NotLogin = 1     // 未登录
+var NoPermission = 2 // 无权限
+var AlreadyLogin = 3 // 已登录
+var NoLogin = 4      // 免登录
+
+func Login(conf config.Config, r *http.Request) (loginState int, cacheMaxAge int64, err error) {
 	upgrade := r.Header.Get("Upgrade")
 	if upgrade == "" {
 		upgrade = r.Header.Get("upgrade")
@@ -28,39 +33,63 @@ func Login(proxyAuth config.ProxyAuth, r *http.Request) (needLogin bool, err err
 	if upgrade == "" {
 		upgrade = r.Header.Get("UPGRADE")
 	}
-	var auth []string
-	if upgrade == "websocket" || upgrade == "Websocket" || upgrade == "WEBSOCKET" {
-		auth = proxyAuth.WsAuth
-	} else {
-		auth = proxyAuth.HttpAuth
-	}
-	if len(auth) <= 0 {
-		return false, nil
-	}
-	var cookie *http.Cookie
-	if cookie, err = r.Cookie(CookieKey); err != nil {
-		return true, err
-	}
-	cookieValue := strings.TrimSpace(cookie.Value)
-	if cookieValue == "" {
-		return true, nil
-	}
-	for _, v := range proxyAuth.Auth {
-		if LoginSession[cookieValue] == v.Account {
-			return false, nil
+	isWs := upgrade == "websocket" || upgrade == "Websocket" || upgrade == "WEBSOCKET"
+
+	for _, s := range conf.Base.ProxySort {
+		v := conf.Proxy[s]
+		if strings.HasPrefix(r.URL.Path, v.Path) {
+			var s []string
+			if isWs {
+				s = v.WsAuth
+				log.Println("WsAuth ", v.WsAuth)
+			} else {
+				s = v.HttpAuth
+				log.Println("HttpAuth ", v.HttpAuth)
+			}
+			log.Println("isWs ", isWs)
+			log.Println("v ", v)
+			log.Println("s ", s)
+			log.Println("r.URL.Path ", r.URL.Path)
+			if len(s) == 0 {
+				log.Println(1)
+				return NoLogin, v.CacheMaxAge, nil
+			}
+
+			var cookie *http.Cookie
+			if cookie, err = r.Cookie(CookieKey); err != nil {
+				log.Println(2)
+				return NotLogin, v.CacheMaxAge, err
+			}
+			cookieValue := strings.TrimSpace(cookie.Value)
+			if cookieValue == "" {
+				log.Println(3)
+				return NotLogin, v.CacheMaxAge, nil
+			}
+
+			cv := cache.Get(cookieValue)
+			if cv == "" {
+				log.Println(4)
+				return NotLogin, v.CacheMaxAge, nil
+			}
+
+			for _, v2 := range s {
+				p := conf.Auth[v2]
+				if cv == p.Account {
+					log.Println(5)
+					return AlreadyLogin, v.CacheMaxAge, nil
+				}
+			}
+			log.Println(6)
+			return NoPermission, v.CacheMaxAge, nil
 		}
 	}
-	return true, nil
+
+	return NotLogin, 0, nil
 }
 
 func HttpLogin(conf config.Config) {
-	//httpHandle("/static/", "http://127.0.0.1:3000")
-	//httpHandle("/manifest.json", "http://127.0.0.1:3000")
-	//httpHandle("/favicon.ico", "http://127.0.0.1:3000")
-	//httpHandle("/logo192.png", "http://127.0.0.1:3000")
-	//httpHandle("/sockjs-node", "http://127.0.0.1:3000")
 
-	http.Handle("/login", http.FileServer(bindata.AssetFile()))
+	http.Handle("/login/", http.StripPrefix("/login/", http.FileServer(bindata.AssetFile())))
 
 	http.HandleFunc("/api/login", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "POST" {
@@ -75,10 +104,10 @@ func HttpLogin(conf config.Config) {
 				md5str := md5Str(v.Password)
 				if v.Account == m["account"] && md5str == m["password"] {
 					session := md5Str(strconv.FormatInt(time.Now().UnixNano(), 10))
-					LoginSession[session] = v.Account
+					cache.Set(session, v.Account)
 
 					expiration := time.Now().Add(2 * time.Hour)
-					http.SetCookie(w, &http.Cookie{Name: CookieKey, Path: "/", Value: session, Expires: expiration})
+					http.SetCookie(w, &http.Cookie{Name: CookieKey, Path: "/", Value: session, HttpOnly: true, Expires: expiration})
 
 					w.Write([]byte(`{"code":200,"msg":"登录成功"}`))
 					return
@@ -90,17 +119,15 @@ func HttpLogin(conf config.Config) {
 		}
 	})
 
-	http.HandleFunc("/api/logout", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/logout", func(w http.ResponseWriter, r *http.Request) {
 
 		u := util.GetUrlArg(r, "url")
-		if u == "" {
+		if strings.TrimSpace(u) == "" || strings.TrimSpace(u) == "null" {
 			u = "/"
 		}
 		var param = url.Values{}
 		param.Add("url", u)
-
-		expiration := time.Now().Add(1 * time.Second)
-		http.SetCookie(w, &http.Cookie{Name: CookieKey, Path: "/", Value: "", Expires: expiration})
+		http.SetCookie(w, &http.Cookie{Name: CookieKey, Path: "/", Value: "", HttpOnly: true, MaxAge: -1})
 		w.Header().Set("Location", "/login?"+param.Encode())
 		w.WriteHeader(302)
 	})
@@ -129,4 +156,9 @@ func md5Str(source string) string {
 	data := []byte(source)
 	has := md5.Sum(data)
 	return strings.ToUpper(fmt.Sprintf("%x", has))
+}
+
+func ClearCookie(w http.ResponseWriter) {
+	expiration := time.Now().Add(1 * time.Second)
+	http.SetCookie(w, &http.Cookie{Name: CookieKey, Path: "/", Value: "", Expires: expiration})
 }

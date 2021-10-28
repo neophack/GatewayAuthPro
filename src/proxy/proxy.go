@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"net/url"
-	"time"
+	"strconv"
 )
 
 // NewProxy takes target host and creates a reverse proxy
@@ -24,23 +24,44 @@ func NewProxy(targetHost string) (*httputil.ReverseProxy, error) {
 
 // ProxyRequestHandler handles the http request using proxy
 // ProxyRequestHandler 使用 proxy 处理请求
-func ProxyRequestHandler(proxyAuth config.ProxyAuth, proxy *httputil.ReverseProxy) func(http.ResponseWriter, *http.Request) {
+func ProxyRequestHandler(conf config.Config, proxy *httputil.ReverseProxy) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		needLogin, err := login.Login(proxyAuth, r)
+		loginState, cacheMaxAge, err := login.Login(conf, r)
 		if err != nil {
 			log.Println(err)
 		}
-		if needLogin {
-			u := util.GetURL(r)
-			var param = url.Values{}
-			param.Add("url", u)
-
-			expiration := time.Now().Add(1 * time.Second)
-			http.SetCookie(w, &http.Cookie{Name: login.CookieKey, Path: "/", Value: "", Expires: expiration})
-			w.Header().Set("Location", "/login?"+param.Encode())
+		log.Println(loginState)
+		switch loginState {
+		case login.NotLogin:
+			login.ClearCookie(w)
+			http.SetCookie(w, &http.Cookie{Name: login.CookieKey, Path: "/", Value: "", HttpOnly: true, MaxAge: -1})
+			w.Header().Set("Location", "/login?"+paramEncode(r))
 			w.WriteHeader(302)
-		} else {
-			proxy.ServeHTTP(w, r)
+		case login.NoPermission:
+			w.Header().Set("Location", "/login?type=nopermission&"+paramEncode(r))
+			w.WriteHeader(302)
+		case login.AlreadyLogin:
+			serveHttp(proxy, cacheMaxAge, w, r)
+		case login.NoLogin:
+			serveHttp(proxy, cacheMaxAge, w, r)
 		}
 	}
+}
+
+func serveHttp(proxy *httputil.ReverseProxy, cacheMaxAge int64, w http.ResponseWriter, r *http.Request) {
+	if cacheMaxAge > 0 {
+		w.Header().Set("Cache-Control", "max-age="+strconv.FormatInt(cacheMaxAge, 10))
+	} else {
+		w.Header().Set("Cache-Control", "no-cache")
+	}
+	proxy.ServeHTTP(w, r)
+}
+
+func paramEncode(r *http.Request) string {
+
+	u := util.GetURL(r)
+	var param = url.Values{}
+	param.Add("url", u)
+
+	return param.Encode()
 }

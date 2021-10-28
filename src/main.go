@@ -5,14 +5,19 @@ import (
 	"GatewayAuth/src/login"
 	"GatewayAuth/src/proxy"
 	"encoding/json"
+	"flag"
 	"log"
 	"net/http"
 	"strconv"
 )
 
+var configPath string
+
 func main() {
 
-	conf := config.Get("./config")
+	start()
+
+	conf := config.Get(configPath)
 	jbyte, _ := json.Marshal(conf)
 	log.Println(string(jbyte))
 
@@ -24,23 +29,22 @@ func main() {
 	log.Fatal(http.ListenAndServe(":"+strconv.Itoa(conf.Base.Port), nil))
 }
 
+func start() {
+	flag.StringVar(&configPath, "c", "./config", "--c config file path / 配置文件路径")
+	flag.Parse()
+}
+
 func configProxy(conf config.Config) {
 
-	for p := range conf.Proxy {
+	for _, p := range conf.Base.ProxySort {
 		n := conf.Proxy[p]
-		proxyAuth := config.ToProxyAuth(*n, conf.Auth)
-		for e := range n.Path {
-			path := n.Path[e]
-			for e2 := range n.Target {
-				target := n.Target[e2]
-				proxyFunc(proxyAuth, path, target)
-			}
-		}
+		path := n.Path
+		proxyFunc(conf, path, n.Target)
 	}
 
 }
 
-func proxyFunc(proxyAuth config.ProxyAuth, path, target string) {
+func proxyFunc(conf config.Config, path, target string) {
 	proxy2, err := proxy.NewProxy(target)
 	if err != nil {
 		panic(err)
@@ -48,5 +52,5 @@ func proxyFunc(proxyAuth config.ProxyAuth, path, target string) {
 
 	// handle all requests to your server using the proxy
 	// 使用 proxy 处理所有请求到你的服务
-	http.HandleFunc(path, proxy.ProxyRequestHandler(proxyAuth, proxy2))
+	http.HandleFunc(path, proxy.ProxyRequestHandler(conf, proxy2))
 }
