@@ -41,45 +41,33 @@ func Login(conf config.Config, r *http.Request) (loginState int, cacheMaxAge int
 			var s []string
 			if isWs {
 				s = v.WsAuth
-				log.Println("WsAuth ", v.WsAuth)
 			} else {
 				s = v.HttpAuth
-				log.Println("HttpAuth ", v.HttpAuth)
 			}
-			log.Println("isWs ", isWs)
-			log.Println("v ", v)
-			log.Println("s ", s)
-			log.Println("r.URL.Path ", r.URL.Path)
 			if len(s) == 0 {
-				log.Println(1)
 				return NoLogin, v.CacheMaxAge, nil
 			}
 
 			var cookie *http.Cookie
 			if cookie, err = r.Cookie(CookieKey); err != nil {
-				log.Println(2)
 				return NotLogin, v.CacheMaxAge, err
 			}
 			cookieValue := strings.TrimSpace(cookie.Value)
 			if cookieValue == "" {
-				log.Println(3)
 				return NotLogin, v.CacheMaxAge, nil
 			}
 
 			cv := cache.Get(cookieValue)
 			if cv == "" {
-				log.Println(4)
 				return NotLogin, v.CacheMaxAge, nil
 			}
 
 			for _, v2 := range s {
 				p := conf.Auth[v2]
 				if cv == p.Account {
-					log.Println(5)
 					return AlreadyLogin, v.CacheMaxAge, nil
 				}
 			}
-			log.Println(6)
 			return NoPermission, v.CacheMaxAge, nil
 		}
 	}
@@ -92,11 +80,13 @@ func HttpLogin(conf config.Config) {
 	http.Handle("/login/", http.StripPrefix("/login/", http.FileServer(bindata.AssetFile())))
 
 	http.HandleFunc("/api/login", func(w http.ResponseWriter, r *http.Request) {
+		clientIp := util.ClientIP(r)
+		clientPublicIp := util.ClientPublicIP(r)
 		if r.Method == "POST" {
 			s, _ := ioutil.ReadAll(r.Body) //把	body 内容读入字符串 s
 			m := make(map[string]string)
 			if err := json.Unmarshal(s, &m); err != nil {
-				log.Println(err)
+				log.Println("ip:", clientIp, clientPublicIp, "err:", err)
 				w.Write([]byte(`{"code":0,"msg":"解析错误"}`))
 				return
 			}
@@ -109,17 +99,24 @@ func HttpLogin(conf config.Config) {
 					expiration := time.Now().Add(2 * time.Hour)
 					http.SetCookie(w, &http.Cookie{Name: CookieKey, Path: "/", Value: session, HttpOnly: true, Expires: expiration})
 
+					log.Println("ip:", clientIp, clientPublicIp, "account:", m["account"], "login success")
 					w.Write([]byte(`{"code":200,"msg":"登录成功"}`))
 					return
 				}
 			}
+			log.Println("ip:", clientIp, clientPublicIp, "account:", m["account"], "login failed")
 			w.Write([]byte(`{"code":0,"msg":"账号密码错误"}`))
 		} else {
+			log.Println("ip:", clientIp, clientPublicIp, "login system error")
 			w.Write([]byte("error"))
 		}
 	})
 
 	http.HandleFunc("/logout", func(w http.ResponseWriter, r *http.Request) {
+
+		clientIp := util.ClientIP(r)
+		clientPublicIp := util.ClientPublicIP(r)
+		log.Println("ip:", clientIp, clientPublicIp, "logout")
 
 		u := util.GetUrlArg(r, "url")
 		if strings.TrimSpace(u) == "" || strings.TrimSpace(u) == "null" {

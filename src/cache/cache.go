@@ -20,7 +20,11 @@ func Get(key string) string {
 func Set(key, value string) {
 	find(func(i int) string {
 		cacheMaps[i][key] = value
-		cacheMaps[i+1][key] = value
+		if (i + 1) >= len(cacheMaps) {
+			cacheMaps[0][key] = value
+		} else {
+			cacheMaps[i+1][key] = value
+		}
 		return ""
 	})
 }

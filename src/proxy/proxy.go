@@ -27,10 +27,9 @@ func NewProxy(targetHost string) (*httputil.ReverseProxy, error) {
 func ProxyRequestHandler(conf config.Config, proxy *httputil.ReverseProxy) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		loginState, cacheMaxAge, err := login.Login(conf, r)
-		if err != nil {
+		if err != nil && err.Error() != "http: named cookie not present" {
 			log.Println(err)
 		}
-		log.Println(loginState)
 		switch loginState {
 		case login.NotLogin:
 			login.ClearCookie(w)

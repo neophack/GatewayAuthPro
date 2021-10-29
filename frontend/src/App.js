@@ -17,6 +17,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import {useSnackbar} from 'notistack';
 import {Login} from "./utils/request";
 import {getUrlParams, isBlank} from './utils/utils'
+import logo from './image/logo.png'
 
 
 function App(props) {
@@ -41,11 +42,11 @@ function App(props) {
             url = "/"
         }
         if (isBlank(account)) {
-            enqueueSnackbar("账号不能为空", snackbarStype('error'));
+            enqueueSnackbar("Account cannot be empty", snackbarStype('error'));
             return
         }
         if (isBlank(password)) {
-            enqueueSnackbar("密码不能为空", snackbarStype('error'));
+            enqueueSnackbar("Password cannot be empty", snackbarStype('error'));
             return
         }
         setBackdropOpen(true);
@@ -87,8 +88,9 @@ function App(props) {
                 >
                     <CssBaseline/>
                     <Container component="main" sx={{mt: 8, mb: 2}} maxWidth="sm">
-                        <Typography variant="h2" component="h1" gutterBottom>
-                            账号无权限，<br/>请重新登录!
+                        <Typography variant="h4" component="h1" gutterBottom>
+                            Accounts no permissions,<br/>Please log in again!<br/>
+                            账号无权限，<br/>请重新登录!<br/>
                         </Typography>
                         <Typography variant="body1">
                             <Button
@@ -98,7 +100,7 @@ function App(props) {
                                 onClick={handleSubmit2}
                                 size="large"
                             >
-                                重新登录
+                                Re-register / 重新登录
                             </Button>
                         </Typography>
                     </Container>
@@ -132,11 +134,15 @@ function App(props) {
                                 alignItems: 'center',
                             }}
                         >
-                            <Avatar sx={{m: 1, bgcolor: 'secondary.main'}}>
-                                <LockOutlinedIcon/>
+                            <Avatar sx={{m: 1, bgcolor: '#fff'}}>
+                                <img
+                                    src={logo}
+                                    width={'100%'}
+                                    loading="lazy"
+                                />
                             </Avatar>
                             <Typography component="h1" variant="h5">
-                                登录
+                                Login
                             </Typography>
                             <Box component="form" noValidate sx={{mt: 1}}>
                                 <TextField
@@ -144,7 +150,7 @@ function App(props) {
                                     required
                                     fullWidth
                                     id="account"
-                                    label="账号"
+                                    label="account"
                                     name="account"
                                     autoFocus
                                     value={account}
@@ -157,7 +163,7 @@ function App(props) {
                                     required
                                     fullWidth
                                     name="password"
-                                    label="密码"
+                                    label="password"
                                     type="password"
                                     id="password"
                                     autoComplete="current-password"
@@ -173,7 +179,7 @@ function App(props) {
                                     sx={{mt: 3, mb: 2}}
                                     onClick={handleSubmit}
                                 >
-                                    登录
+                                    Login
                                 </Button>
                             </Box>
                         </Box>
