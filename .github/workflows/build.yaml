@@ -15,9 +15,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - uses: qualitiaco/action-lambda-build-pack@v1
-        with:
-          src-path:
-          build-sh: github_build.sh
-          output-path: output
+      - name: Install sudo package
+        run: apt update && apt install sudo
+
+      - name: build
+        run: |
+          sudo apt-get update
+          sudo apt-get install wget
 
