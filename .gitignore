@@ -43,3 +43,4 @@ frontend/build/**
 **/yarn.lock
 
 gatewayAuth_*
+build
