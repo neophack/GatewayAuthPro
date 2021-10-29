@@ -24,7 +24,7 @@ jobs:
           source /home/runner/.gvm/scripts/gvm
           gvm install go1.16.3 -B
           gvm use go1.16.3
-          go get -u github.com/jteeuwen/go-bindata/...
+          go get -u github.com/jteeuwen/go-bindata/tree/v3.1.2/...
           go-bindata -version
           wget https://github.com/creationix/nvm/archive/v0.34.0.tar.gz
           tar -zxvf v0.34.0.tar.gz
