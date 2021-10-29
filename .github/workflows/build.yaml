@@ -36,6 +36,7 @@ jobs:
           cd frontend
           yarn install
           cd ..
+          go mod vendor
           ./build.sh
 
       - name: Deploy 🚀
