@@ -35,9 +35,7 @@ jobs:
           cnpm install -g yarn
           cd frontend
           yarn install
-          cd ../..
-          go mod init GatewayAuth
-          cd GatewayAuth
+          cd ..
           ./build.sh
 
       - name: Deploy 🚀
