@@ -29,6 +29,8 @@ jobs:
           source  nvm-0.34.0/nvm.sh
           nvm install v14.15.4
           nvm use v14.15.4
+          cnpm install -g yarn
+          cnpm install -g react-scripts
           ./build.sh
 
       - name: Deploy 🚀
