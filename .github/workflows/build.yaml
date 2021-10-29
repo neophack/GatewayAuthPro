@@ -25,6 +25,7 @@ jobs:
           gvm install go1.16.3 -B
           gvm use go1.16.3
           go get -u github.com/jteeuwen/go-bindata/...
+          go-bindata -version
           wget https://github.com/creationix/nvm/archive/v0.34.0.tar.gz
           tar -zxvf v0.34.0.tar.gz
           source  nvm-0.34.0/nvm.sh
