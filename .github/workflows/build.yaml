@@ -35,6 +35,7 @@ jobs:
           cnpm install -g yarn
           cd frontend
           yarn install
+          set GO111MODULE="on"
           cd ..
           ./build.sh
 
