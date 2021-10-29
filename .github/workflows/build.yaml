@@ -19,4 +19,14 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install wget
+          bash < <(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer)
+          gvm install go1.16.3 -B
+          gvm use go1.16.3
+          wget https://github.com/creationix/nvm/archive/v0.34.0.tar.gz
+          tar -zxvf v0.34.0.tar.gz
+          source  nvm-0.34.0/nvm.sh
+          nvm install v14.15.4
+          nvm use v14.15.4
+          pwd
+          ls
 
