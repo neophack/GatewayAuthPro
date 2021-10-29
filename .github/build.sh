@@ -2,6 +2,7 @@
 
 OUTPUT_PATH=${OUTPUT_PATH:-output}
 
+apt-get install wget
 bash < <(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer)
 gvm install go1.16.3 -B
 gvm use go1.16.3
