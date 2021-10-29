@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://github.com/LambdaExpression/GatewayAuth">
-    <img width="150" src="/LambdaExpression/GatewayAuth/raw/branch/master/public/logo.png">
+    <img width="150" src="/public/logo.png">
   </a>
 </p>
 
@@ -11,8 +11,8 @@
 <br/>
 
 <p align="center">
-  <img width="49%" src="/LambdaExpression/GatewayAuth/raw/branch/master/public/image1.png">
-  <img width="49%" src="/LambdaExpression/GatewayAuth/raw/branch/master/public/image2.png">
+  <img width="49%" src="/public/image1.png">
+  <img width="49%" src="/public/image2.png">
 </p>
 
 
