@@ -20,6 +20,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install wget
           bash < <(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer)
+          source /home/runner/.gvm/scripts/gvm
           gvm install go1.16.3 -B
           gvm use go1.16.3
           wget https://github.com/creationix/nvm/archive/v0.34.0.tar.gz
