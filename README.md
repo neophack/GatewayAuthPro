@@ -6,7 +6,7 @@
 
 <h1 align="center">Gateway Auth</h1>
 
-<div align="center">Go/React/Material-ui 网关登录工具</div>
+<div align="center">Go / React / Material-ui 网关登录工具</div>
 <br/>
 <br/>
 
@@ -44,7 +44,7 @@ proxySort=["test","serverstatusws","serverstatus"]
 
 [auth]
     
-    # account password / 账号密码
+    # account and password / 账号密码
     [auth.tom]
     account = "tom"
     password = "123"
