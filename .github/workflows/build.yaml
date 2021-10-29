@@ -1,0 +1,22 @@
+name: GatewayAuth
+
+on:
+  push:
+    paths:
+      - ".github/workflows/build.yaml"
+      - "src/**"
+      - "frontend/**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - uses: qualitiaco/action-lambda-build-pack@v1
+        with:
+          build-sh: .github/build.sh
+          output-path: output
+
