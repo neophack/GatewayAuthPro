@@ -17,6 +17,7 @@ jobs:
 
       - uses: qualitiaco/action-lambda-build-pack@v1
         with:
+          src-path:
           build-sh: githubBuild.sh
           output-path: output
 
