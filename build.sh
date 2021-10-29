@@ -3,6 +3,7 @@
 version=1_0_0
 
 cd frontend
+yarn install
 yarn build
 cd ./build
 go-bindata -o=../../src/bindata/bindata.go  -pkg=bindata   -fs ./...
