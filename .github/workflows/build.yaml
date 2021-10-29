@@ -24,6 +24,7 @@ jobs:
           source /home/runner/.gvm/scripts/gvm
           gvm install go1.16.3 -B
           gvm use go1.16.3
+          go get -u github.com/jteeuwen/go-bindata/...
           wget https://github.com/creationix/nvm/archive/v0.34.0.tar.gz
           tar -zxvf v0.34.0.tar.gz
           source  nvm-0.34.0/nvm.sh
@@ -31,7 +32,9 @@ jobs:
           nvm use v14.15.4
           npm install -g cnpm
           cnpm install -g yarn
-          cnpm install -g react-scripts
+          cd frontend
+          yarn install
+          cd ..
           ./build.sh
 
       - name: Deploy 🚀

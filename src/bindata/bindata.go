@@ -195,7 +195,7 @@ func assetManifestJson() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "asset-manifest.json", size: 929, mode: os.FileMode(420), modTime: time.Unix(1635492371, 0)}
+	info := bindataFileInfo{name: "asset-manifest.json", size: 929, mode: os.FileMode(420), modTime: time.Unix(1635499252, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -215,7 +215,7 @@ func faviconIco() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "favicon.ico", size: 1215, mode: os.FileMode(420), modTime: time.Unix(1635492363, 0)}
+	info := bindataFileInfo{name: "favicon.ico", size: 1215, mode: os.FileMode(420), modTime: time.Unix(1635499245, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -235,7 +235,7 @@ func indexHtml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "index.html", size: 2270, mode: os.FileMode(420), modTime: time.Unix(1635492371, 0)}
+	info := bindataFileInfo{name: "index.html", size: 2270, mode: os.FileMode(420), modTime: time.Unix(1635499252, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -255,7 +255,7 @@ func logo192Png() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "logo192.png", size: 4030, mode: os.FileMode(420), modTime: time.Unix(1635492363, 0)}
+	info := bindataFileInfo{name: "logo192.png", size: 4030, mode: os.FileMode(420), modTime: time.Unix(1635499245, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -275,7 +275,7 @@ func logo512Png() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "logo512.png", size: 7872, mode: os.FileMode(420), modTime: time.Unix(1635492363, 0)}
+	info := bindataFileInfo{name: "logo512.png", size: 7872, mode: os.FileMode(420), modTime: time.Unix(1635499245, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -295,7 +295,7 @@ func manifestJson() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "manifest.json", size: 492, mode: os.FileMode(420), modTime: time.Unix(1635492363, 0)}
+	info := bindataFileInfo{name: "manifest.json", size: 492, mode: os.FileMode(420), modTime: time.Unix(1635499245, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -315,7 +315,7 @@ func robotsTxt() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "robots.txt", size: 67, mode: os.FileMode(420), modTime: time.Unix(1635492363, 0)}
+	info := bindataFileInfo{name: "robots.txt", size: 67, mode: os.FileMode(420), modTime: time.Unix(1635499245, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -335,7 +335,7 @@ func staticCssMain8c8b27cfChunkCss() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/css/main.8c8b27cf.chunk.css", size: 804, mode: os.FileMode(420), modTime: time.Unix(1635492371, 0)}
+	info := bindataFileInfo{name: "static/css/main.8c8b27cf.chunk.css", size: 804, mode: os.FileMode(420), modTime: time.Unix(1635499252, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -355,7 +355,7 @@ func staticCssMain8c8b27cfChunkCssMap() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/css/main.8c8b27cf.chunk.css.map", size: 1434, mode: os.FileMode(420), modTime: time.Unix(1635492371, 0)}
+	info := bindataFileInfo{name: "static/css/main.8c8b27cf.chunk.css.map", size: 1434, mode: os.FileMode(420), modTime: time.Unix(1635499252, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -375,7 +375,7 @@ func staticJs2F7deca79ChunkJs() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/js/2.f7deca79.chunk.js", size: 377589, mode: os.FileMode(420), modTime: time.Unix(1635492371, 0)}
+	info := bindataFileInfo{name: "static/js/2.f7deca79.chunk.js", size: 377589, mode: os.FileMode(420), modTime: time.Unix(1635499252, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -395,7 +395,7 @@ func staticJs2F7deca79ChunkJsLicenseTxt() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/js/2.f7deca79.chunk.js.LICENSE.txt", size: 1694, mode: os.FileMode(420), modTime: time.Unix(1635492371, 0)}
+	info := bindataFileInfo{name: "static/js/2.f7deca79.chunk.js.LICENSE.txt", size: 1694, mode: os.FileMode(420), modTime: time.Unix(1635499252, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -415,7 +415,7 @@ func staticJs2F7deca79ChunkJsMap() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/js/2.f7deca79.chunk.js.map", size: 1445127, mode: os.FileMode(420), modTime: time.Unix(1635492371, 0)}
+	info := bindataFileInfo{name: "static/js/2.f7deca79.chunk.js.map", size: 1445127, mode: os.FileMode(420), modTime: time.Unix(1635499252, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -435,7 +435,7 @@ func staticJsMain2fb43c6cChunkJs() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/js/main.2fb43c6c.chunk.js", size: 14862, mode: os.FileMode(420), modTime: time.Unix(1635492371, 0)}
+	info := bindataFileInfo{name: "static/js/main.2fb43c6c.chunk.js", size: 14862, mode: os.FileMode(420), modTime: time.Unix(1635499252, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -455,7 +455,7 @@ func staticJsMain2fb43c6cChunkJsMap() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/js/main.2fb43c6c.chunk.js.map", size: 25999, mode: os.FileMode(420), modTime: time.Unix(1635492371, 0)}
+	info := bindataFileInfo{name: "static/js/main.2fb43c6c.chunk.js.map", size: 25999, mode: os.FileMode(420), modTime: time.Unix(1635499252, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -475,7 +475,7 @@ func staticJsRuntimeMain03c7ee68Js() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/js/runtime-main.03c7ee68.js", size: 1571, mode: os.FileMode(420), modTime: time.Unix(1635492371, 0)}
+	info := bindataFileInfo{name: "static/js/runtime-main.03c7ee68.js", size: 1571, mode: os.FileMode(420), modTime: time.Unix(1635499252, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -495,7 +495,7 @@ func staticJsRuntimeMain03c7ee68JsMap() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/js/runtime-main.03c7ee68.js.map", size: 8290, mode: os.FileMode(420), modTime: time.Unix(1635492371, 0)}
+	info := bindataFileInfo{name: "static/js/runtime-main.03c7ee68.js.map", size: 8290, mode: os.FileMode(420), modTime: time.Unix(1635499252, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
