@@ -28,6 +28,7 @@ jobs:
           source  nvm-0.34.0/nvm.sh
           nvm install v14.15.4
           nvm use v14.15.4
+          ./build.sh
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@4.1.5
