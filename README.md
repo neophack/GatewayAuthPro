@@ -15,6 +15,21 @@
   <img width="49%" src="/public/image2.png">
 </p>
 
+### Run / 运行
+
+[Download the version of the corresponding system / 下载对应系统的版本](https://github.com/LambdaExpression/GatewayAuth/releases)
+
+```sh
+$ chmod +x gatewayAuth_linux_amd64_1_0_0
+
+$ ./gatewayAuth_darwin_amd64_1_0_0 -h
+Usage of ./gatewayAuth_darwin_amd64_1_0_0:
+  -c string
+    	--c config file path / 配置文件路径 (default "./config")
+
+$ ./gatewayAuth_darwin_amd64_1_0_0 -c ./config
+```
+
 
 
 #### config file / config 文件
