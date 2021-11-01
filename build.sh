@@ -15,6 +15,9 @@ go mod download
 go mod vendor
 go mod verify
 
+ls
+pwd
+
 CGO_ENABLED=0 GOOS=linux GOARCH=arm go build ./src/main.go
 mv main ./build/gatewayAuth_linux_arm_$version
 CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build ./src/main.go
