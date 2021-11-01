@@ -11,7 +11,9 @@ cd ../..
 
 mkdir -p build
 
-go build ./src/main.go
+go mod download
+go mod vendor
+go mod verify
 
 CGO_ENABLED=0 GOOS=linux GOARCH=arm go build ./src/main.go
 mv main ./build/gatewayAuth_linux_arm_$version
