@@ -26,7 +26,6 @@ jobs:
           gvm use go1.16.3
           go get -u github.com/go-bindata/go-bindata/...
           go-bindata -version
-          export GO111MODULE=on
           wget https://github.com/creationix/nvm/archive/v0.34.0.tar.gz
           tar -zxvf v0.34.0.tar.gz
           source  nvm-0.34.0/nvm.sh
