@@ -24,7 +24,7 @@ function App(props) {
     const [account, setAccount] = useState("");
     const [password, setPassword] = useState("");
     const [backdropOpen, setBackdropOpen] = useState(false);
-    const {enqueueSnackbar, closeSnackbar} = useSnackbar();
+    const {enqueueSnackbar} = useSnackbar();
 
     const snackbarStype = (variant) => {
         return {
