@@ -38,41 +38,45 @@ func Login(conf config.Config, r *http.Request) (loginState int, cacheMaxAge int
 	for _, s := range conf.Base.ProxySort {
 		v := conf.Proxy[s]
 		if strings.HasPrefix(r.URL.Path, v.Path) {
-			var s []string
-			if isWs {
-				s = v.WsAuth
-			} else {
-				s = v.HttpAuth
-			}
-			if len(s) == 0 {
-				return NoLogin, v.CacheMaxAge, nil
-			}
-
-			var cookie *http.Cookie
-			if cookie, err = r.Cookie(CookieKey); err != nil {
-				return NotLogin, v.CacheMaxAge, err
-			}
-			cookieValue := strings.TrimSpace(cookie.Value)
-			if cookieValue == "" {
-				return NotLogin, v.CacheMaxAge, nil
-			}
-
-			cv := cache.Get(cookieValue)
-			if cv == "" {
-				return NotLogin, v.CacheMaxAge, nil
-			}
-
-			for _, v2 := range s {
-				p := conf.Auth[v2]
-				if cv == p.Account {
-					return AlreadyLogin, v.CacheMaxAge, nil
-				}
-			}
-			return NoPermission, v.CacheMaxAge, nil
+			return loginCheck(isWs, v, conf, r)
 		}
 	}
 
 	return NotLogin, 0, nil
+}
+
+func loginCheck(isWs bool, v *config.Proxy, conf config.Config, r *http.Request) (loginState int, cacheMaxAge int64, err error) {
+	var s []string
+	if isWs {
+		s = v.WsAuth
+	} else {
+		s = v.HttpAuth
+	}
+	if len(s) == 0 {
+		return NoLogin, v.CacheMaxAge, nil
+	}
+
+	var cookie *http.Cookie
+	if cookie, err = r.Cookie(CookieKey); err != nil {
+		return NotLogin, v.CacheMaxAge, err
+	}
+	cookieValue := strings.TrimSpace(cookie.Value)
+	if cookieValue == "" {
+		return NotLogin, v.CacheMaxAge, nil
+	}
+
+	cv := cache.Get(cookieValue)
+	if cv == "" {
+		return NotLogin, v.CacheMaxAge, nil
+	}
+
+	for _, v2 := range s {
+		p := conf.Auth[v2]
+		if cv == p.Account {
+			return AlreadyLogin, v.CacheMaxAge, nil
+		}
+	}
+	return NoPermission, v.CacheMaxAge, nil
 }
 
 func HttpLogin(conf config.Config) {
