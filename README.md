@@ -9,10 +9,12 @@
 <div align="center">Go / React / Material-ui 网关登录工具 </div>
 <br/>
 <div align="center">
-    <a href="javascript:void(0)"><img src="https://img.shields.io/badge/Go-v1.16.3-blue.svg" /></a>
+    <img alt="GitHub go.mod Go version" src="https://img.shields.io/github/go-mod/go-version/LambdaExpression/GatewayAuth">
     <a href="javascript:void(0)"><img src="https://img.shields.io/badge/Node-v14.15.4-blue.svg" /></a>
     <a href="javascript:void(0)"><img src="https://img.shields.io/badge/React-17.0.2-blue.svg" /></a>
     <a href="javascript:void(0)"><img src="https://img.shields.io/badge/Material-5.0.4-blue.svg" /></a>
+    <img alt="GitHub repo file count" src="https://img.shields.io/github/directory-file-count/LambdaExpression/GatewayAuth">
+    <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/LambdaExpression/GatewayAuth">
     <a href="https://codeclimate.com/github/LambdaExpression/GatewayAuth/maintainability"><img src="https://api.codeclimate.com/v1/badges/027ea75f1d5cbf0a3081/maintainability" /></a>
 </div>
 <br/>
