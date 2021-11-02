@@ -6,9 +6,10 @@
 
 <h1 align="center">Gateway Auth</h1>
 
-<div align="center">Go / React / Material-ui 网关登录工具</div>
+<div align="center">Go / React / Material-ui 网关登录工具 </div>
+<div align="center"><a href="https://codeclimate.com/github/LambdaExpression/GatewayAuth/maintainability"><img src="https://api.codeclimate.com/v1/badges/027ea75f1d5cbf0a3081/maintainability" /></a></div>
 <br/>
-<a href="https://codeclimate.com/github/LambdaExpression/GatewayAuth/maintainability"><img src="https://api.codeclimate.com/v1/badges/027ea75f1d5cbf0a3081/maintainability" /></a>
+
 <br/>
 <br/>
 
