@@ -35,10 +35,10 @@ func ProxyRequestHandler(conf config.Config, proxy *httputil.ReverseProxy) func(
 			login.ClearCookie(w)
 			http.SetCookie(w, &http.Cookie{Name: login.CookieKey, Path: "/", Value: "", HttpOnly: true, MaxAge: -1})
 			w.Header().Set("Location", "/login?"+paramEncode(r))
-			w.WriteHeader(302)
+			w.WriteHeader(http.StatusFound)
 		case login.NoPermission:
 			w.Header().Set("Location", "/login?type=nopermission&"+paramEncode(r))
-			w.WriteHeader(302)
+			w.WriteHeader(http.StatusFound)
 		case login.AlreadyLogin:
 			serveHttp(proxy, cacheMaxAge, w, r)
 		case login.NoLogin:
