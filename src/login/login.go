@@ -91,6 +91,7 @@ func HttpLogin(conf config.Config) {
 			m := make(map[string]string)
 			if err := json.Unmarshal(s, &m); err != nil {
 				log.Println("ip:", clientIp, clientPublicIp, "err:", err)
+				w.WriteHeader(http.StatusBadRequest)
 				w.Write([]byte(`{"code":0,"msg":"解析错误"}`))
 				return
 			}
@@ -104,14 +105,17 @@ func HttpLogin(conf config.Config) {
 					http.SetCookie(w, &http.Cookie{Name: CookieKey, Path: "/", Value: session, HttpOnly: true, Expires: expiration})
 
 					log.Println("ip:", clientIp, clientPublicIp, "account:", m["account"], "login success")
+					w.WriteHeader(http.StatusOK)
 					w.Write([]byte(`{"code":200,"msg":"登录成功"}`))
 					return
 				}
 			}
 			log.Println("ip:", clientIp, clientPublicIp, "account:", m["account"], "login failed")
+			w.WriteHeader(http.StatusUnauthorized)
 			w.Write([]byte(`{"code":0,"msg":"账号密码错误"}`))
 		} else {
 			log.Println("ip:", clientIp, clientPublicIp, "login system error")
+			w.WriteHeader(http.StatusBadRequest)
 			w.Write([]byte("error"))
 		}
 	})
@@ -130,7 +134,7 @@ func HttpLogin(conf config.Config) {
 		param.Add("url", u)
 		http.SetCookie(w, &http.Cookie{Name: CookieKey, Path: "/", Value: "", HttpOnly: true, MaxAge: -1})
 		w.Header().Set("Location", "/login?"+param.Encode())
-		w.WriteHeader(302)
+		w.WriteHeader(http.StatusFound)
 	})
 }
 
