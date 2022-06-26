@@ -38,14 +38,14 @@ func Login(conf config.Config, r *http.Request) (loginState int, cacheMaxAge int
 	for _, s := range conf.Base.ProxySort {
 		v := conf.Proxy[s]
 		if strings.HasPrefix(r.URL.Path, v.Path) {
-			return loginCheck(isWs, v, conf, r)
+			return LoginCheck(isWs, v, conf, r)
 		}
 	}
 
 	return NotLogin, 0, nil
 }
 
-func loginCheck(isWs bool, v *config.Proxy, conf config.Config, r *http.Request) (loginState int, cacheMaxAge int64, err error) {
+func LoginCheck(isWs bool, v *config.Proxy, conf config.Config, r *http.Request) (loginState int, cacheMaxAge int64, err error) {
 	var s []string
 	if isWs {
 		s = v.WsAuth

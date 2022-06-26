@@ -12,13 +12,13 @@ func init() {
 }
 
 func Get(key string) string {
-	return find(func(i int) string {
+	return Find(func(i int) string {
 		return cacheMaps[i][key]
 	})
 }
 
 func Set(key, value string) {
-	find(func(i int) string {
+	Find(func(i int) string {
 		cacheMaps[i][key] = value
 		if (i + 1) >= len(cacheMaps) {
 			cacheMaps[0][key] = value
@@ -29,8 +29,8 @@ func Set(key, value string) {
 	})
 }
 
-func find(f func(i int) string) string {
-	t := getTime()
+func Find(f func(i int) string) string {
+	t := GetTime()
 	var v string
 	for i := 0; i < cacheSize; i++ {
 		if t == i {
@@ -43,7 +43,7 @@ func find(f func(i int) string) string {
 	return v
 }
 
-func getTime() int {
+func GetTime() int {
 	u := time.Now().Unix()
 	u = u / 60 / 60
 	return int(u % int64(cacheSize))

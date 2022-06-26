@@ -13,18 +13,19 @@ import (
 
 // NewProxy takes target host and creates a reverse proxy
 // NewProxy 拿到 targetHost 后，创建一个反向代理
-func NewProxy(targetHost string) (*httputil.ReverseProxy, error) {
-	url, err := url.Parse(targetHost)
+func NewProxy(targetHost string) (*url.URL, error) {
+	urlTarget, err := url.Parse(targetHost)
 	if err != nil {
 		return nil, err
 	}
 
-	return httputil.NewSingleHostReverseProxy(url), nil
+	return urlTarget, nil
 }
 
 // ProxyRequestHandler handles the http request using proxy
 // ProxyRequestHandler 使用 proxy 处理请求
-func ProxyRequestHandler(conf config.Config, proxy *httputil.ReverseProxy) func(http.ResponseWriter, *http.Request) {
+func ProxyRequestHandler(conf config.Config, urlTarget *url.URL) func(http.ResponseWriter, *http.Request) {
+	proxy := httputil.NewSingleHostReverseProxy(urlTarget)
 	return func(w http.ResponseWriter, r *http.Request) {
 		loginState, cacheMaxAge, err := login.Login(conf, r)
 		if err != nil && err.Error() != "http: named cookie not present" {
@@ -34,29 +35,37 @@ func ProxyRequestHandler(conf config.Config, proxy *httputil.ReverseProxy) func(
 		case login.NotLogin:
 			login.ClearCookie(w)
 			http.SetCookie(w, &http.Cookie{Name: login.CookieKey, Path: "/", Value: "", HttpOnly: true, MaxAge: -1})
-			w.Header().Set("Location", "/login?"+paramEncode(r))
+			w.Header().Set("Location", "/login?"+ParamEncode(r))
 			w.WriteHeader(http.StatusFound)
 		case login.NoPermission:
-			w.Header().Set("Location", "/login?type=nopermission&"+paramEncode(r))
+			w.Header().Set("Location", "/login?type=nopermission&"+ParamEncode(r))
 			w.WriteHeader(http.StatusFound)
 		case login.AlreadyLogin:
-			serveHttp(proxy, cacheMaxAge, w, r)
+			ServeHttp(proxy, cacheMaxAge, w, r, urlTarget)
 		case login.NoLogin:
-			serveHttp(proxy, cacheMaxAge, w, r)
+			ServeHttp(proxy, cacheMaxAge, w, r, urlTarget)
 		}
 	}
 }
 
-func serveHttp(proxy *httputil.ReverseProxy, cacheMaxAge int64, w http.ResponseWriter, r *http.Request) {
+func ServeHttp(proxy *httputil.ReverseProxy, cacheMaxAge int64, w http.ResponseWriter, r *http.Request, u *url.URL) {
 	if cacheMaxAge > 0 {
 		w.Header().Set("Cache-Control", "max-age="+strconv.FormatInt(cacheMaxAge, 10))
 	} else {
 		w.Header().Set("Cache-Control", "no-cache")
 	}
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+	r.URL.Host = u.Host
+	r.URL.Scheme = u.Scheme
+	r.Header.Set("X-Forwarded-Host", r.Header.Get("Host"))
+	r.Host = u.Host
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	proxy.ServeHTTP(w, r)
 }
 
-func paramEncode(r *http.Request) string {
+func ParamEncode(r *http.Request) string {
 
 	u := util.GetURL(r)
 	var param = url.Values{}
