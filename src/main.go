@@ -35,22 +35,35 @@ func Start() {
 }
 
 func ConfigProxy(conf config.Config) {
-
-	for _, p := range conf.Base.ProxySort {
-		n := conf.Proxy[p]
+	var x = []string{}
+	var y = []string{}
+	for _, i := range conf.Base.ProxySort {
+		n := conf.Proxy[i]
 		path := n.Path
-		ProxyFunc(conf, path, n.Target)
+		if len(x) == 0 {
+			x = append(x, path)
+			y = append(y, i)
+		} else {
+			for k, v := range x {
+				if path == v {
+					break
+				}
+				if k == len(x)-1 {
+					x = append(x, path)
+					y = append(y, i)
+				}
+			}
+		}
+	}
+	for _, p := range x {
+		ProxyFunc(conf, p)
 	}
 
 }
 
-func ProxyFunc(conf config.Config, path, target string) {
-	urlTarget, err := proxy.NewProxy(target)
-	if err != nil {
-		panic(err)
-	}
+func ProxyFunc(conf config.Config, path string) {
 
 	// handle all requests to your server using the proxy
 	// 使用 proxy 处理所有请求到你的服务
-	http.HandleFunc(path, proxy.ProxyRequestHandler(conf, urlTarget))
+	http.HandleFunc(path, proxy.ProxyRequestHandler(conf))
 }

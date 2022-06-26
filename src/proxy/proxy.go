@@ -24,13 +24,19 @@ func NewProxy(targetHost string) (*url.URL, error) {
 
 // ProxyRequestHandler handles the http request using proxy
 // ProxyRequestHandler 使用 proxy 处理请求
-func ProxyRequestHandler(conf config.Config, urlTarget *url.URL) func(http.ResponseWriter, *http.Request) {
-	proxy := httputil.NewSingleHostReverseProxy(urlTarget)
+func ProxyRequestHandler(conf config.Config) func(http.ResponseWriter, *http.Request) {
+
 	return func(w http.ResponseWriter, r *http.Request) {
-		loginState, cacheMaxAge, err := login.Login(conf, r)
+		loginState, cacheMaxAge, target, err := login.Login(conf, r)
 		if err != nil && err.Error() != "http: named cookie not present" {
 			log.Println(err)
 		}
+		urlTarget, err := NewProxy(target)
+		if err != nil {
+			panic(err)
+		}
+		proxy := httputil.NewSingleHostReverseProxy(urlTarget)
+
 		switch loginState {
 		case login.NotLogin:
 			login.ClearCookie(w)
@@ -54,6 +60,9 @@ func ServeHttp(proxy *httputil.ReverseProxy, cacheMaxAge int64, w http.ResponseW
 	} else {
 		w.Header().Set("Cache-Control", "no-cache")
 	}
+
+	w.Header().Set("Sec-WebSocket-Accept", r.Header.Get("Sec-WebSocket-Accept"))
+
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")

@@ -18,7 +18,7 @@ export function Login(uri, account, password) {
         url = uri;
     }
     return new Promise((resolve, reject) => {
-        var pd = MD5(password).toString().toUpperCase();
+        var pd = MD5(MD5(password).toString().toUpperCase()+"31415926").toString().toUpperCase();
         return fetch(url, post({"account": account, "password": pd}))
             .then(res=>res.json())
             .then(res => {

@@ -6,20 +6,26 @@ proxySort=["test","serverstatusws","serverstatus"]
 [proxy]
 
     [proxy.test]
-    path = "/test"
-    target = "http://127.0.0.1:80"
-    httpAuth = ["tom"]   # login account / 登录账号
-    wsAuth = ["tom"]     # login account / 登录账号
+    path = "/"
+    target = "http://127.0.0.1:9900"
+    httpAuth = ["jay"]
 
     [proxy.serverstatusws]
-    path = "/public"
-    target = "http://127.0.0.1:35601"
-    wsAuth = ["tom"]
+    path = "/"
+    target = "http://42.194.178.234:9001"
+    httpAuth = ["mi"]
+    wsAuth = ["mi"]
 
     [proxy.serverstatus]
     path = "/"
-    target = "http://127.0.0.1:35601"
+    target = "http://127.0.0.1:6004"
     httpAuth = ["tom"]
+    wsAuth = ["tom"]
+
+    [proxy.serverstatus2]
+    path = "/"
+    target = "ws://127.0.0.1:6004"
+    wsAuth = ["tom"]
 
 [auth]
 
@@ -28,6 +34,10 @@ proxySort=["test","serverstatusws","serverstatus"]
     account = "tom"
     password = "123"
 
-    [auth.test]
-    account = "test"
+    [auth.jay]
+    account = "jay"
+    password = "123"
+
+    [auth.mi]
+    account = "mi"
     password = "123"
