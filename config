@@ -1,43 +1,49 @@
 [base]
 port = 8094
 # proxy execution order / 代理执行顺序
-proxySort=["test","serverstatusws","serverstatus"]
+proxySort=["test0","test","serverstatusws","serverstatus"]
 
 [proxy]
+    [proxy.test0]
+        path = "/"
+        target = "https://github.com"
+        httpAuth = ["admin"]
+        wsAuth = ["admin"]
 
     [proxy.test]
-    path = "/"
-    target = "http://127.0.0.1:9900"
-    httpAuth = ["jay"]
+        path = "/"
+        target = "http://127.0.0.1:7002"
+        httpAuth = ["jay"]
+        wsAuth = ["jay"]
 
     [proxy.serverstatusws]
-    path = "/"
-    target = "http://42.194.178.234:9001"
-    httpAuth = ["mi"]
-    wsAuth = ["mi"]
+        path = "/"
+        target = "http://127.0.0.1:9900"
+        httpAuth = ["mi"]
+        wsAuth = ["mi"]
 
     [proxy.serverstatus]
-    path = "/"
-    target = "http://127.0.0.1:6004"
-    httpAuth = ["tom"]
-    wsAuth = ["tom"]
+        path = "/"
+        target = "http://127.0.0.1:6004"
+        httpAuth = ["tom"]
+        wsAuth = ["tom"]
 
-    [proxy.serverstatus2]
-    path = "/"
-    target = "ws://127.0.0.1:6004"
-    wsAuth = ["tom"]
 
 [auth]
 
     # account and password / 账号密码
     [auth.tom]
-    account = "tom"
-    password = "123"
+        account = "tom"
+        password = "123"
 
     [auth.jay]
-    account = "jay"
-    password = "123"
+        account = "jay"
+        password = "123"
 
     [auth.mi]
-    account = "mi"
-    password = "123"
+        account = "mi"
+        password = "123"
+
+    [auth.admin]
+        account = "admin"
+        password = "admin"

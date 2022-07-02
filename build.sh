@@ -5,7 +5,7 @@ version=1_0_1
 cd frontend
 yarn build
 cd ./build
-go-bindata -o=../../src/bindata/bindata.go  -pkg=bindata -fs ./...
+/home/nn/GoCode/bin/go-bindata -o=../../src/bindata/bindata.go  -pkg=bindata -fs ./...
 
 cd ../..
 

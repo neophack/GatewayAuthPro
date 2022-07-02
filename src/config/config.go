@@ -3,6 +3,7 @@ package config
 import (
 	"github.com/BurntSushi/toml"
 	"log"
+	"net/url"
 )
 
 type Config struct {
@@ -27,6 +28,14 @@ type Proxy struct {
 type Auth struct {
 	Account  string `toml:"account"`
 	Password string `toml:"password"`
+}
+
+type ApiProxy struct {
+	Path     string
+	Target   *url.URL
+	HttpAuth []string
+	WsAuth   []string
+	CacheMaxAge int64
 }
 
 func Get(filePath string) Config {

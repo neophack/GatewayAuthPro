@@ -1,6 +1,7 @@
 package proxy
 
 import (
+
 	"GatewayAuth/src/config"
 	"GatewayAuth/src/login"
 	"GatewayAuth/src/util"
@@ -11,47 +12,61 @@ import (
 	"strconv"
 )
 
-// NewProxy takes target host and creates a reverse proxy
-// NewProxy 拿到 targetHost 后，创建一个反向代理
-func NewProxy(targetHost string) (*url.URL, error) {
-	urlTarget, err := url.Parse(targetHost)
-	if err != nil {
-		return nil, err
-	}
-
-	return urlTarget, nil
+type ApiGateway struct {
+	Proxyinfos []config.ApiProxy
+	Conf       config.Config
 }
 
-// ProxyRequestHandler handles the http request using proxy
-// ProxyRequestHandler 使用 proxy 处理请求
-func ProxyRequestHandler(conf config.Config) func(http.ResponseWriter, *http.Request) {
+func NewApiGateway(conf config.Config) *ApiGateway {
+	var proxyInfos []config.ApiProxy
+	for _, p := range conf.Base.ProxySort {
+		n := conf.Proxy[p]
+		backendUri, err := url.Parse(n.Target)
 
-	return func(w http.ResponseWriter, r *http.Request) {
-		loginState, cacheMaxAge, target, err := login.Login(conf, r)
-		if err != nil && err.Error() != "http: named cookie not present" {
-			log.Println(err)
+		if err != nil || backendUri.Host == "" {
+			panic("invalid BACKEND_URI setting")
 		}
-		urlTarget, err := NewProxy(target)
-		if err != nil {
-			panic(err)
-		}
-		proxy := httputil.NewSingleHostReverseProxy(urlTarget)
-
-		switch loginState {
-		case login.NotLogin:
-			login.ClearCookie(w)
-			http.SetCookie(w, &http.Cookie{Name: login.CookieKey, Path: "/", Value: "", HttpOnly: true, MaxAge: -1})
-			w.Header().Set("Location", "/login?"+ParamEncode(r))
-			w.WriteHeader(http.StatusFound)
-		case login.NoPermission:
-			w.Header().Set("Location", "/login?type=nopermission&"+ParamEncode(r))
-			w.WriteHeader(http.StatusFound)
-		case login.AlreadyLogin:
-			ServeHttp(proxy, cacheMaxAge, w, r, urlTarget)
-		case login.NoLogin:
-			ServeHttp(proxy, cacheMaxAge, w, r, urlTarget)
-		}
+		var proxyInfo config.ApiProxy
+		proxyInfo.HttpAuth = n.HttpAuth
+		proxyInfo.WsAuth = n.WsAuth
+		proxyInfo.Target = backendUri
+		proxyInfo.Path = n.Path
+		proxyInfo.CacheMaxAge = 0
+		proxyInfos = append(proxyInfos, proxyInfo)
 	}
+	return &ApiGateway{
+		Proxyinfos: proxyInfos,
+		Conf:       conf,
+	}
+}
+
+func (gateway *ApiGateway) Handle(w http.ResponseWriter, r *http.Request) {
+	loginState, cacheMaxAge, target, err := login.Login(gateway.Conf, gateway.Proxyinfos, r)
+	if err != nil && err.Error() != "http: named cookie not present" {
+		log.Println(err)
+	}
+	if target == nil {
+		loginState = 1
+	}
+
+	switch loginState {
+	case login.NotLogin:
+		login.ClearCookie(w)
+		http.SetCookie(w, &http.Cookie{Name: login.CookieKey, Path: "/", Value: "", HttpOnly: true, MaxAge: -1})
+		w.Header().Set("Location", "/loginxx?"+ParamEncode(r))
+		w.WriteHeader(http.StatusFound)
+	case login.NoPermission:
+		w.Header().Set("Location", "/loginxx?type=nopermission&"+ParamEncode(r))
+		w.WriteHeader(http.StatusFound)
+	case login.AlreadyLogin:
+		proxy := httputil.NewSingleHostReverseProxy(target)
+		ServeHttp(proxy, cacheMaxAge, w, r, target)
+		//proxy.ServeHTTP(w, r)
+	case login.NoLogin:
+		proxy := httputil.NewSingleHostReverseProxy(target)
+		ServeHttp(proxy, cacheMaxAge, w, r, target)
+	}
+
 }
 
 func ServeHttp(proxy *httputil.ReverseProxy, cacheMaxAge int64, w http.ResponseWriter, r *http.Request, u *url.URL) {
@@ -61,16 +76,11 @@ func ServeHttp(proxy *httputil.ReverseProxy, cacheMaxAge int64, w http.ResponseW
 		w.Header().Set("Cache-Control", "no-cache")
 	}
 
-	w.Header().Set("Sec-WebSocket-Accept", r.Header.Get("Sec-WebSocket-Accept"))
-
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
 	r.URL.Host = u.Host
 	r.URL.Scheme = u.Scheme
 	r.Header.Set("X-Forwarded-Host", r.Header.Get("Host"))
 	r.Host = u.Host
-	w.Header().Set("Access-Control-Allow-Origin", "*")
+
 	proxy.ServeHTTP(w, r)
 }
 

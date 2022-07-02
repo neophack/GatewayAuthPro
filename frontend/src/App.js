@@ -17,6 +17,7 @@ import {useSnackbar} from 'notistack';
 import {Login} from "./utils/request";
 import {getUrlParams, isBlank} from './utils/utils'
 import logo from './image/logo.png'
+import bgimage from './image/1920_middle.jpg'
 
 
 function App(props) {
@@ -49,7 +50,7 @@ function App(props) {
             return
         }
         setBackdropOpen(true);
-        Login("api/login", account, password)
+        Login("api/loginxx", account, password)
             .then(res => {
                 if (res.code === 200) {
                     enqueueSnackbar(res.msg, snackbarStype('success'));
@@ -115,7 +116,7 @@ function App(props) {
                         sm={4}
                         md={7}
                         sx={{
-                            backgroundImage: 'url(https://api.dujin.org/bing/1920.php)',
+                            backgroundImage: 'url('+bgimage+')',
                             backgroundRepeat: 'no-repeat',
                             backgroundColor: (t) =>
                                 t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],

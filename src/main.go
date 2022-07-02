@@ -6,10 +6,13 @@ import (
 	"GatewayAuth/src/proxy"
 	"encoding/json"
 	"flag"
+	"github.com/rs/cors"
 	"log"
 	"net/http"
-	"strconv"
+	"time"
 )
+//go:generate go install -a -v github.com/go-bindata/go-bindata/...@latest
+//go:generate /home/nn/GoCode/bin/go-bindata -fs -o=../bindata/bindata.go -pkg=bindata ../../../frontend/build
 
 var configPath string
 
@@ -21,49 +24,31 @@ func main() {
 	jbyte, _ := json.Marshal(conf)
 	log.Println(string(jbyte))
 
-	ConfigProxy(conf)
+	mux := http.NewServeMux()
+	login.HttpLogin(conf,mux)
 
-	login.HttpLogin(conf)
+	gateway := proxy.NewApiGateway(conf)
 
-	log.Println("listen : " + strconv.Itoa(conf.Base.Port))
-	log.Fatal(http.ListenAndServe(":"+strconv.Itoa(conf.Base.Port), nil))
+	mux.HandleFunc("/", gateway.Handle)
+
+	handler := cors.New(cors.Options{
+		AllowedOrigins: []string{"*"},
+		AllowedHeaders: []string{"Accept", "Content-Type", "Authorization"},
+	}).Handler(mux)
+
+	log.Print("gateway server started")
+
+	srv := &http.Server{
+		Addr:         ":10000",
+		Handler:      handler,
+		WriteTimeout: 10 * time.Second,
+		ReadTimeout:  10 * time.Second,
+	}
+
+	log.Fatal(srv.ListenAndServe())
 }
 
 func Start() {
 	flag.StringVar(&configPath, "c", "./config", "--c config file path / 配置文件路径")
 	flag.Parse()
-}
-
-func ConfigProxy(conf config.Config) {
-	var x = []string{}
-	var y = []string{}
-	for _, i := range conf.Base.ProxySort {
-		n := conf.Proxy[i]
-		path := n.Path
-		if len(x) == 0 {
-			x = append(x, path)
-			y = append(y, i)
-		} else {
-			for k, v := range x {
-				if path == v {
-					break
-				}
-				if k == len(x)-1 {
-					x = append(x, path)
-					y = append(y, i)
-				}
-			}
-		}
-	}
-	for _, p := range x {
-		ProxyFunc(conf, p)
-	}
-
-}
-
-func ProxyFunc(conf config.Config, path string) {
-
-	// handle all requests to your server using the proxy
-	// 使用 proxy 处理所有请求到你的服务
-	http.HandleFunc(path, proxy.ProxyRequestHandler(conf))
 }

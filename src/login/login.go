@@ -1,7 +1,7 @@
 package login
 
 import (
-	//"GatewayAuth/src/bindata"
+	"GatewayAuth/src/bindata"
 	"GatewayAuth/src/cache"
 	"GatewayAuth/src/config"
 	"GatewayAuth/src/util"
@@ -25,7 +25,8 @@ var NoPermission = 2 // 无权限
 var AlreadyLogin = 3 // 已登录
 var NoLogin = 4      // 免登录
 
-func Login(conf config.Config, r *http.Request) (loginState int, cacheMaxAge int64,target string, err error) {
+
+func Login(conf config.Config,proxyInfos []config.ApiProxy, r *http.Request) (loginState int, cacheMaxAge int64,target *url.URL, err error) {
 	upgrade := r.Header.Get("Upgrade")
 	if upgrade == "" {
 		upgrade = r.Header.Get("upgrade")
@@ -35,8 +36,8 @@ func Login(conf config.Config, r *http.Request) (loginState int, cacheMaxAge int
 	}
 	isWs := upgrade == "websocket" || upgrade == "Websocket" || upgrade == "WEBSOCKET"
 
-	for _, s := range conf.Base.ProxySort {
-		v := conf.Proxy[s]
+	for i, _ := range proxyInfos{
+		v := proxyInfos[i]
 		if strings.HasPrefix(r.URL.Path, v.Path) {
 			loginState , cacheMaxAge ,target , err= LoginCheck(isWs, v, conf, r)
 			if loginState==AlreadyLogin {
@@ -45,14 +46,14 @@ func Login(conf config.Config, r *http.Request) (loginState int, cacheMaxAge int
 		}
 	}
 
-	return NotLogin, 0,"#", nil
+	return NotLogin, 0,nil, nil
 }
 
-func LoginCheck(isWs bool, v *config.Proxy, conf config.Config, r *http.Request) (loginState int, cacheMaxAge int64,target string, err error) {
+func LoginCheck(isWs bool, v config.ApiProxy, conf config.Config, r *http.Request) (loginState int, cacheMaxAge int64,target *url.URL, err error) {
 	var s []string
 	if isWs {
 		s = v.WsAuth
-		v.Target=strings.Replace(v.Target,"http","ws",1)
+		//v.Target=strings.Replace(v.Target,"http","ws",1)
 	} else {
 		s = v.HttpAuth
 	}
@@ -83,12 +84,12 @@ func LoginCheck(isWs bool, v *config.Proxy, conf config.Config, r *http.Request)
 	return NoPermission, v.CacheMaxAge, v.Target,nil
 }
 
-func HttpLogin(conf config.Config) {
+func HttpLogin(conf config.Config,mux *http.ServeMux) {
 
-	// http.Handle("/login/", http.StripPrefix("/login/", http.FileServer(bindata.AssetFile())))
-	http.Handle("/login/", http.StripPrefix("/login/", http.FileServer(http.Dir("frontend/build"))))
+	mux.Handle("/loginxx/", http.StripPrefix("/loginxx/", http.FileServer(bindata.AssetFile())))
+	//http.Handle("/login/", http.StripPrefix("/login/", http.FileServer(http.Dir("frontend/build"))))
 
-	http.HandleFunc("/api/login", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/api/loginxx", func(w http.ResponseWriter, r *http.Request) {
 		clientIp := util.ClientIP(r)
 		clientPublicIp := util.ClientPublicIP(r)
 		if r.Method == "POST" {
@@ -101,7 +102,7 @@ func HttpLogin(conf config.Config) {
 				return
 			}
 			for _, v := range conf.Auth {
-				md5str := md5Str(md5Str(v.Password)+"31415926")
+				md5str := md5Str(v.Password)
 				if v.Account == m["account"] && md5str == m["password"] {
 					session := md5Str(strconv.FormatInt(time.Now().UnixNano(), 10))
 					cache.Set(session, v.Account)
@@ -125,7 +126,7 @@ func HttpLogin(conf config.Config) {
 		}
 	})
 
-	http.HandleFunc("/logout", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/logout", func(w http.ResponseWriter, r *http.Request) {
 
 		clientIp := util.ClientIP(r)
 		clientPublicIp := util.ClientPublicIP(r)
@@ -138,20 +139,12 @@ func HttpLogin(conf config.Config) {
 		var param = url.Values{}
 		param.Add("url", u)
 		http.SetCookie(w, &http.Cookie{Name: CookieKey, Path: "/", Value: "", HttpOnly: true, MaxAge: -1})
-		w.Header().Set("Location", "/login?"+param.Encode())
+		w.Header().Set("Location", "/loginxx?"+param.Encode())
 		w.WriteHeader(http.StatusFound)
 	})
 }
 
-func httpHandle(pattern, targetHost string) {
-	http.HandleFunc(pattern, func(w http.ResponseWriter, r *http.Request) {
-		p, err := NewProxy(targetHost)
-		if err != nil {
-			panic(err)
-		}
-		p.ServeHTTP(w, r)
-	})
-}
+
 
 func NewProxy(targetHost string) (*httputil.ReverseProxy, error) {
 	url, err := url.Parse(targetHost)

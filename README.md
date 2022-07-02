@@ -1,21 +1,21 @@
 <p align="center">
-  <a href="https://github.com/LambdaExpression/GatewayAuth">
+  <a href="https://github.com/neophack/GatewayAuthPro">
     <img width="150" src="/public/logo.png">
   </a>
 </p>
 
-<h1 align="center">Gateway Auth</h1>
+<h1 align="center">Gateway Auth Pro</h1>
 
 <div align="center">Go / React / Material-ui 网关登录工具 </div>
 <br/>
 <div align="center">
-    <img alt="GitHub go.mod Go version" src="https://img.shields.io/github/go-mod/go-version/LambdaExpression/GatewayAuth?cacheSeconds=3600">
+    <img alt="GitHub go.mod Go version" src="https://img.shields.io/github/go-mod/go-version/neophack/GatewayAuthPro?cacheSeconds=3600">
     <a href="javascript:void(0)"><img src="https://img.shields.io/badge/Node-v14.15.4-blue.svg" /></a>
-    <a href="javascript:void(0)"><img src="https://img.shields.io/badge/React-17.0.2-blue.svg" /></a>
+    <a href="javascript:void(0)"><img src="https://img.shields.io/badge/React-18.2.0-blue.svg" /></a>
     <a href="javascript:void(0)"><img src="https://img.shields.io/badge/Material-5.0.4-blue.svg" /></a>
-    <!--<img alt="GitHub repo file count" src="https://img.shields.io/github/directory-file-count/LambdaExpression/GatewayAuth">-->
-    <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/LambdaExpression/GatewayAuth">
-    <a href="https://codeclimate.com/github/LambdaExpression/GatewayAuth/maintainability"><img src="https://api.codeclimate.com/v1/badges/027ea75f1d5cbf0a3081/maintainability" /></a>
+    <!--<img alt="GitHub repo file count" src="https://img.shields.io/github/directory-file-count/neophack/GatewayAuthPro">-->
+    <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/neophack/GatewayAuthPro">
+    <a href="https://codeclimate.com/github/neophack/GatewayAuthPro/maintainability"><img src="https://api.codeclimate.com/v1/badges/027ea75f1d5cbf0a3081/maintainability" /></a>
 </div>
 <br/>
 
@@ -32,21 +32,21 @@
 
 ### Run
 
-[Download the version of the corresponding system](https://github.com/LambdaExpression/GatewayAuth/releases)
+[Download the version of the corresponding system](https://github.com/neophack/GatewayAuthPro/releases)
 
 ```sh
-$ wget https://github.com/LambdaExpression/GatewayAuth/releases/download/v1.0.0/gatewayAuth_linux_amd64_1_0_0
+$ wget https://github.com/neophack/GatewayAuthPro/releases/download/v1.0.0/GatewayAuthPro_linux_amd64_1_0_0
 
-$ chmod +x gatewayAuth_linux_amd64_1_0_0
+$ chmod +x GatewayAuthPro_linux_amd64_1_0_0
 
-$ ./gatewayAuth_darwin_amd64_1_0_0 -h
-Usage of ./gatewayAuth_darwin_amd64_1_0_0:
+$ ./GatewayAuthPro_darwin_amd64_1_0_0 -h
+Usage of ./GatewayAuthPro_darwin_amd64_1_0_0:
   -c string
     	--c config file path / 配置文件路径 (default "./config")
     	
 $ echo -e '[base]\nport = 8094\nproxySort=["test"]\n[proxy]\n    [proxy.test]\n    path = "/"\n    target = "http://127.0.0.1:80"\n    httpAuth = ["tom"]\n[auth]\n    [auth.test]\n    account = "test"\n    password = "123"' > ./config
 
-$ ./gatewayAuth_darwin_amd64_1_0_0 -c ./config
+$ ./GatewayAuthPro_darwin_amd64_1_0_0 -c ./config
 2021/11/01 16:13:16 {"Base":{"Port":8094,"ProxySort":["test","serverstatusws","serverstatus"]},"Proxy":{"serverstatus":{"Path":"/","Target":"http://127.0.0.1:35601","CacheMaxAge":0,"HttpAuth":["tom"],"WsAuth":null},"serverstatusws":{"Path":"/public","Target":"http://127.0.0.1:35601","CacheMaxAge":0,"HttpAuth":null,"WsAuth":["tom"]},"test":{"Path":"/test","Target":"http://127.0.0.1:80","CacheMaxAge":0,"HttpAuth":["tom"],"WsAuth":["tom"]}},"Auth":{"test":{"Account":"test","Password":"123"},"tom":{"Account":"tom","Password":"123"}}}
 2021/11/01 16:13:16 listen : 8094
 
@@ -89,4 +89,7 @@ proxySort=["test","serverstatusws","serverstatus"]
     account = "test"
     password = "123"
 ```
+
+### Link
+[LambdaExpression/GatewayAuth](https://github.com/LambdaExpression/GatewayAuth)
 
