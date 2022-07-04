@@ -15,6 +15,8 @@ type Config struct {
 type Base struct {
 	Port      int      `toml:"port"`
 	ProxySort []string `toml:"proxySort"`
+	Crt      string       `toml:"crt"`
+	Key      string       `toml:"key"`
 }
 
 type Proxy struct {

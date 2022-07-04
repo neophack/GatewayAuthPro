@@ -1,6 +1,6 @@
 #!/bin/sh
 
-version=1_0_1
+version=1_0_0
 
 cd frontend
 yarn build
@@ -12,13 +12,13 @@ cd ../..
 mkdir -p build
 
 CGO_ENABLED=0 GOOS=linux GOARCH=arm go build ./src/main.go
-mv main ./build/gatewayAuth_linux_arm_$version
+mv main ./build/GatewayAuthPro_linux_arm_$version
 CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build ./src/main.go
-mv main ./build/gatewayAuth_linux_amd64_$version
+mv main ./build/GatewayAuthPro_linux_amd64_$version
 CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build ./src/main.go
-mv main ./build/gatewayAuth_darwin_amd64_$version
+mv main ./build/GatewayAuthPro_darwin_amd64_$version
 CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build ./src/main.go
-mv main.exe ./build/gatewayAuth_windows_amd64_$version.exe
+mv main.exe ./build/GatewayAuthPro_windows_amd64_$version.exe
 
 echo "\n\n======================== build =========================\n\n"
 

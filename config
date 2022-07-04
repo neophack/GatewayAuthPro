@@ -1,7 +1,9 @@
 [base]
-port = 8094
+port = 10000
 # proxy execution order / 代理执行顺序
 proxySort=["test0","test","serverstatusws","serverstatus"]
+crt = "server.crts"
+key = "server.key"
 
 [proxy]
     [proxy.test0]

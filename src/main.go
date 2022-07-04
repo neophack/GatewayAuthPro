@@ -9,7 +9,9 @@ import (
 	"github.com/rs/cors"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
+	"os"
 )
 //go:generate go install -a -v github.com/go-bindata/go-bindata/...@latest
 //go:generate /home/nn/GoCode/bin/go-bindata -fs -o=../bindata/bindata.go -pkg=bindata ../../../frontend/build
@@ -39,13 +41,20 @@ func main() {
 	log.Print("gateway server started")
 
 	srv := &http.Server{
-		Addr:         ":10000",
+		Addr:         ":"+strconv.Itoa(conf.Base.Port),
 		Handler:      handler,
 		WriteTimeout: 10 * time.Second,
 		ReadTimeout:  10 * time.Second,
 	}
+	_, err0 := os.Stat(conf.Base.Crt)
+	_, err1 := os.Stat(conf.Base.Key)
+	if os.IsNotExist(err0) || os.IsNotExist(err1) {
+		log.Fatal(srv.ListenAndServe())
+	}else{
+		log.Fatal(srv.ListenAndServeTLS(conf.Base.Crt,conf.Base.Key))
+	}
+	
 
-	log.Fatal(srv.ListenAndServe())
 }
 
 func Start() {

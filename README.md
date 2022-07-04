@@ -59,6 +59,8 @@ $ ./GatewayAuthPro_darwin_amd64_1_0_0 -c ./config
 port = 8094
 # proxy execution order / 代理执行顺序
 proxySort=["test","serverstatusws","serverstatus"] 
+crt = server.crt
+key = server.key
 
 [proxy]
 
@@ -88,6 +90,14 @@ proxySort=["test","serverstatusws","serverstatus"]
     [auth.test]
     account = "test"
     password = "123"
+```
+
+### https
+
+```
+openssl genrsa -out server.key 2048
+openssl req -nodes -new -key server.key -subj "/CN=localhost" -out server.csr
+openssl x509 -req -sha256 -days 365 -in server.csr -signkey server.key -out server.crt
 ```
 
 ### Link
